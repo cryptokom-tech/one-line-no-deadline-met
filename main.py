@@ -17,10 +17,17 @@ LIMIT = 200
 def check(text: str) -> str | None:
     if not text.strip():
         return "entry must not be blank"
+    if text != text.strip():
+        return "entry must not have leading or trailing whitespace"
     if len(text) > LIMIT:
         return f"entry must be at most {LIMIT} characters (got {len(text)})"
     if "\n" in text or "\r" in text:
         return "entry must be a single line"
+    # The judge brief wants one sentence: a second sentence-terminator
+    # anywhere except the very end means the line is two sentences.
+    body = text.rstrip(".!?")
+    if any(mark in body for mark in ".!?"):
+        return "entry must be a single sentence"
     return None
 
 
